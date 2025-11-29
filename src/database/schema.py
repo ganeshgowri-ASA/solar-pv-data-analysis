@@ -398,6 +398,87 @@ class DeviationFlag(Base):
     )
 
 # ============================================================================
+# PROTOCOLS & STANDARDS
+# ============================================================================
+
+class ProtocolCategory(enum.Enum):
+    """Protocol category enumeration."""
+    IV_MEASUREMENT = "iv_measurement"
+    STC_CORRECTION = "stc_correction"
+    TEMPERATURE_COEFFICIENT = "temperature_coefficient"
+    SPECTRAL_MISMATCH = "spectral_mismatch"
+    SIMULATOR_CLASSIFICATION = "simulator_classification"
+    MODULE_QUALIFICATION = "module_qualification"
+    ENERGY_RATING = "energy_rating"
+    HOTSPOT_DETECTION = "hotspot_detection"
+    UNCERTAINTY = "uncertainty"
+    BIFACIALITY = "bifaciality"
+    IAM = "iam"
+
+
+class Protocol(Base):
+    """Test protocols based on IEC standards.
+
+    Stores all 54 standard test protocols with their parameters,
+    requirements, and applicable conditions.
+    """
+    __tablename__ = 'protocols'
+
+    id = Column(Integer, primary_key=True)
+    protocol_id = Column(String(50), unique=True, nullable=False, index=True)
+
+    # Standard reference
+    standard_reference = Column(String(100), nullable=False)  # e.g., "IEC 60904-1"
+    standard_version = Column(String(20))  # e.g., "2020"
+    method_clause_no = Column(String(50))  # e.g., "7.3"
+
+    # Protocol details
+    name = Column(String(200), nullable=False)
+    description = Column(Text)
+    category = Column(Enum(ProtocolCategory), nullable=False)
+
+    # Test type for frontend filtering
+    test_type = Column(String(100), nullable=False)
+
+    # Parameters (JSON for flexibility)
+    required_parameters = Column(JSON)  # List of required parameter names
+    optional_parameters = Column(JSON)  # List of optional parameters
+    default_values = Column(JSON)  # Default values for parameters
+
+    # Conditions and tolerances
+    applicable_technologies = Column(JSON)  # List of applicable PV technologies
+    temperature_range_min = Column(Float)  # °C
+    temperature_range_max = Column(Float)  # °C
+    irradiance_range_min = Column(Float)  # W/m²
+    irradiance_range_max = Column(Float)  # W/m²
+
+    # Accuracy and uncertainty
+    accuracy_class = Column(String(20))  # A+, A, B, C or percentage
+    typical_uncertainty_percent = Column(Float)
+
+    # Equipment requirements
+    equipment_requirements = Column(JSON)  # List of equipment specs needed
+
+    # Procedure details
+    procedure_steps = Column(JSON)  # Ordered list of procedure steps
+    pass_criteria = Column(JSON)  # Pass/fail criteria
+
+    # Status and metadata
+    is_active = Column(Boolean, default=True)
+    display_order = Column(Integer, default=0)  # For UI ordering
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    notes = Column(Text)
+
+    __table_args__ = (
+        Index('idx_protocol_standard', 'standard_reference'),
+        Index('idx_protocol_category', 'category'),
+        Index('idx_protocol_test_type', 'test_type'),
+    )
+
+
+# ============================================================================
 # INDEXES FOR PERFORMANCE
 # ============================================================================
 

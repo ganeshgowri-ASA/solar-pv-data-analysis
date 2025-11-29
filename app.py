@@ -54,6 +54,19 @@ except ImportError as e:
     MODULES_LOADED = False
     IMPORT_ERROR = str(e)
 
+# Initialize database and seed protocols
+DB_INITIALIZED = False
+DB_INIT_ERROR = None
+try:
+    from src.database import init_database, get_db, Protocol
+    # Initialize database with protocol seeding
+    init_database()
+    DB_INITIALIZED = True
+    print("Database initialized and protocols seeded successfully")
+except Exception as e:
+    DB_INIT_ERROR = str(e)
+    print(f"Database initialization skipped or failed: {e}")
+
 # Page configuration
 st.set_page_config(
     page_title="Solar PV Data Analysis Platform",
