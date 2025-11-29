@@ -11,6 +11,10 @@ Modules:
 - classifier: Solar simulator ABC+ classification per IEC 60904-9
 - temperature_coeff: Temperature coefficient extraction (α, β, γ, κ)
 - uncertainty: GUM uncertainty propagation and budgets
+- hotspot_detection: Cell hotspot and weak cell detection with heatmaps
+- energy_rating: IEC 61853 energy rating (CSER, CSPR, power matrix)
+- iam_analysis: Incidence Angle Modifier curve fitting and losses
+- bifaciality: IEC TS 60904-1-2 bifaciality factor and gain
 
 IEC Standards Implementation:
 - IEC 60904-1: I-V curve characterization
@@ -19,6 +23,8 @@ IEC Standards Implementation:
 - IEC 60904-10: Temperature coefficient measurement
 - IEC 60891: Temperature and irradiance corrections
 - IEC 61215: Design qualification
+- IEC 61853: Energy rating and power matrix
+- IEC TS 60904-1-2: Bifacial module testing
 """
 
 from .iv_curve import IVCurveAnalyzer
@@ -103,6 +109,51 @@ from .uncertainty import (
     propagate_uncertainty_sum,
     calculate_fill_factor_uncertainty,
 )
+from .hotspot_detection import (
+    HotspotDetector,
+    HotspotResult,
+    HotspotAnalysisResult,
+    StringMismatchResult,
+    CellConfiguration,
+    CellLayout,
+    CellStatus,
+    detect_hotspots,
+    generate_cell_heatmap,
+    analyze_string_currents,
+)
+from .energy_rating import (
+    EnergyRatingCalculator,
+    EnergyRatingResult,
+    PowerMatrix,
+    PowerMatrixPoint,
+    ClimateProfile,
+    ClimateData,
+    CLIMATE_PROFILES,
+    create_sample_power_matrix,
+    calculate_energy_rating,
+)
+from .iam_analysis import (
+    IAMAnalyzer,
+    IAMModel,
+    IAMParameters,
+    IAMResult,
+    IAMCurveFitResult,
+    calculate_iam,
+    fit_iam_data,
+    get_typical_iam_parameters,
+)
+from .bifaciality import (
+    BifacialAnalyzer,
+    BifacialIVData,
+    BifacialityResult,
+    BifacialGainResult,
+    MeasurementSide,
+    MountingConfiguration,
+    calculate_bifaciality_factor,
+    estimate_bifacial_gain,
+    get_typical_bifaciality,
+    get_ground_albedo,
+)
 
 __all__ = [
     # I-V Curve Analysis
@@ -181,4 +232,45 @@ __all__ = [
     "propagate_uncertainty_ratio",
     "propagate_uncertainty_sum",
     "calculate_fill_factor_uncertainty",
+    # Hotspot Detection
+    "HotspotDetector",
+    "HotspotResult",
+    "HotspotAnalysisResult",
+    "StringMismatchResult",
+    "CellConfiguration",
+    "CellLayout",
+    "CellStatus",
+    "detect_hotspots",
+    "generate_cell_heatmap",
+    "analyze_string_currents",
+    # Energy Rating (IEC 61853)
+    "EnergyRatingCalculator",
+    "EnergyRatingResult",
+    "PowerMatrix",
+    "PowerMatrixPoint",
+    "ClimateProfile",
+    "ClimateData",
+    "CLIMATE_PROFILES",
+    "create_sample_power_matrix",
+    "calculate_energy_rating",
+    # IAM Analysis
+    "IAMAnalyzer",
+    "IAMModel",
+    "IAMParameters",
+    "IAMResult",
+    "IAMCurveFitResult",
+    "calculate_iam",
+    "fit_iam_data",
+    "get_typical_iam_parameters",
+    # Bifaciality (IEC TS 60904-1-2)
+    "BifacialAnalyzer",
+    "BifacialIVData",
+    "BifacialityResult",
+    "BifacialGainResult",
+    "MeasurementSide",
+    "MountingConfiguration",
+    "calculate_bifaciality_factor",
+    "estimate_bifacial_gain",
+    "get_typical_bifaciality",
+    "get_ground_albedo",
 ]
